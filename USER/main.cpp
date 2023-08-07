@@ -3,11 +3,11 @@
 #include "i2c_slave.h"
 #include "Wire.h"
 
-#define LED_Pin PC13
-#define TP_INT_Pin PA2
-#define KEY_Pin PA1
+#define RESET_Pin PB2
+#define TP_INT_Pin PB9
+#define TE_IN_Pin PB1
 #define PWM_Pin PA0
-#define ZT7568_SLAVE_ADDR 0x48
+#define ZT7568_SLAVE_ADDR 0x20
 
 #define Soft_i2C
 
@@ -32,13 +32,13 @@ void LED_Toogle()
 			
 				ZT7568.requestFrom(ZT7568_SLAVE_ADDR, 40);    
 			
-				while (ZT7568.available()) 
-				{ 
+//				while (ZT7568.available()) 
+//				{ 
 						for(uint8_t i = 0; i < 40; i++)
 					{
 					  read_buf[i] = Wire.read(); 
 					}
-				}	
+//				}	
 				
 				ZT7568.beginTransmission(ZT7568_SLAVE_ADDR); 		
 				ZT7568.write(0x03);        		
@@ -52,24 +52,24 @@ void LED_Toogle()
 
 }
 void setup() {
-	   uint8_t read_buf[2];
+//	   uint8_t read_buf[2];
     /*PWM DutyCycle: 0~1000 -> 0~100%*/
     /*PWM Frequency: 10KHz*/
     PWM_Init(PWM_Pin, 1000, 60);
 	  pwmWrite(PWM_Pin, 500);
 		// put your setup code here, to run once:
-		pinMode(LED_Pin, OUTPUT);
+		pinMode(RESET_Pin, OUTPUT);
 		pinMode(TP_INT_Pin, OUTPUT);
 		digitalWrite(TP_INT_Pin, HIGH);
 
-    pinMode(KEY_Pin, INPUT_PULLUP);
-    attachInterrupt(KEY_Pin, LED_Toogle, FALLING);
+    pinMode(TE_IN_Pin, INPUT_PULLUP);
+    attachInterrupt(TE_IN_Pin, LED_Toogle, FALLING);
 	
-	  digitalWrite(LED_Pin, HIGH);
+	  digitalWrite(RESET_Pin, HIGH);
 		delay(10);
-		digitalWrite(LED_Pin, LOW);
+		digitalWrite(RESET_Pin, LOW);
 		delay(100);
-		digitalWrite(LED_Pin, HIGH);
+		digitalWrite(RESET_Pin, HIGH);
 		delay(10);
 	
 		I2C1_Slave_init();
@@ -179,28 +179,28 @@ void setup() {
 
 void loop() {
 
-    // put your main code here, to run repeatedly:
-				ZT7568.beginTransmission(ZT7568_SLAVE_ADDR); 		
-				ZT7568.write(0x80);        		
-				ZT7568.write(0x00);        		    		
-				ZT7568.endTransmission(); 
-				delay_us(50);
-			
-				ZT7568.requestFrom(ZT7568_SLAVE_ADDR, 40);    
-			
-				while (ZT7568.available()) 
-				{ 
-						for(uint8_t i = 0; i < 40; i++)
-					{
-					  read_buf[i] = Wire.read(); 
-					}
-				}	
-				
-				ZT7568.beginTransmission(ZT7568_SLAVE_ADDR); 		
-				ZT7568.write(0x03);        		
-				ZT7568.write(0x00);        		    		
-				ZT7568.endTransmission(); 
-        delay(16);
+//    // put your main code here, to run repeatedly:
+//				ZT7568.beginTransmission(ZT7568_SLAVE_ADDR); 		
+//				ZT7568.write(0x80);        		
+//				ZT7568.write(0x00);        		    		
+//				ZT7568.endTransmission(); 
+//				delay_us(50);
+//			
+//				ZT7568.requestFrom(ZT7568_SLAVE_ADDR, 40);    
+//			
+////				while (ZT7568.available()) 
+////				{ 
+////						for(uint8_t i = 0; i < 40; i++)
+////					{
+////					  read_buf[i] = Wire.read(); 
+////					}
+////				}	
+//				
+//				ZT7568.beginTransmission(ZT7568_SLAVE_ADDR); 		
+//				ZT7568.write(0x03);        		
+//				ZT7568.write(0x00);        		    		
+//				ZT7568.endTransmission(); 
+//        delay(16);
 }
 
 
@@ -213,7 +213,7 @@ int main(void)
 {
     InternalClocks_Init();
     Delay_Init();
-    ADCx_Init(ADC1);
+//    ADCx_Init(ADC1);
     setup();
     for(;;)loop();
 }

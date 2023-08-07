@@ -57,7 +57,7 @@ void WireBase::setClock(uint32_t clock)
 
 void WireBase::beginTransmission(uint8_t slave_address)
 {
-    itc_msg.addr = slave_address >> 1;
+    itc_msg.addr = slave_address;
     itc_msg.data = &tx_buf[tx_buf_idx];
     itc_msg.length = 0;
     itc_msg.flags = 0;
@@ -90,7 +90,7 @@ uint8_t WireBase::requestFrom(uint8_t address, int num_bytes)
     {
         num_bytes = WIRE_BUFSIZ;
     }
-    itc_msg.addr = address >> 1;
+    itc_msg.addr = address;
     itc_msg.flags = I2C_MSG_READ;
     itc_msg.length = num_bytes;
     itc_msg.data = &rx_buf[rx_buf_idx];

@@ -5,10 +5,11 @@
 //#include "misc.h"
 
 #include "i2c_slave.h"
+uint8_t flag = 1;
 
 /*******************************************************************/
 extern volatile uint8_t ADCBuffer[16];
-#define DEV_SLAVE_ADDR 0x90;
+#define DEV_SLAVE_ADDR 0x48 << 1;
 unsigned char i2c1_mode=I2C1_MODE_WAITING;
 /*---------IIC1---------------*/
 uint8_t  Buffer_Rx_IIC1[40];//????
@@ -65,7 +66,7 @@ void I2C1_Slave_init(void) {
     GPIO_PinAFConfig(GPIOB, GPIO_PinSource7, GPIO_AF_1);
  
     // I2C config
-    I2C_InitStructure.I2C_Timing               = 0x0000020B;
+    I2C_InitStructure.I2C_Timing               = 0x00731012;
     I2C_InitStructure.I2C_AnalogFilter         = I2C_AnalogFilter_Enable;
     I2C_InitStructure.I2C_DigitalFilter        = 0x00;
     I2C_InitStructure.I2C_Mode                 = I2C_Mode_I2C;
@@ -215,7 +216,8 @@ void I2C1_IRQHandler(void)
     if(status & I2C_ISR_ADDR)
     {   // I2C1 Address match event occurs
         I2C_ClearITPendingBit(I2C1, I2C_ISR_ADDR);
- 
+         Rx_Idx_IIC1=0;
+        Tx_Idx_IIC1=0;
         if(status & I2C_ISR_DIR)
         {   // I2C1: slave enters transmitter mode.
             ;
@@ -230,45 +232,186 @@ void I2C1_IRQHandler(void)
     else if(status & I2C_ISR_RXNE)
     {
         I2C1->ISR |= I2C_ISR_TXE;
-        temp = I2C_ReceiveData(I2C1);
-        if(Instruct)
+        Buffer_Rx_IIC1[Rx_Idx_IIC1++] = I2C_ReceiveData(I2C1);
+        if(1)
         {   // Host Instruct
-            switch(temp)
-            {
-//                case 0x00:  // Get DevInfo
-//                    TxBuff = (uint8_t *)&DevInfo;     // 24 bytes
-//                    MaxBytes = sizeof(DevInfo);
-//                    break;
-//                case 0x18:  // Get DevStatus
-//                    TxBuff = (uint8_t *)&DevStatus;   // 8 bytes
-//                    MaxBytes = sizeof(DevStatus);
-//                    break;
-//                default: break;
-            }
+           	if(Buffer_Rx_IIC1[0] == 0xAE)
+			{
+						Response_Message[0] = 0x26;				
+			}
+			else if(Buffer_Rx_IIC1[0] == 0xAF | Buffer_Rx_IIC1[0] == 0x10)
+			{
+				for(int i = 0; i < 40; i++)
+				{
+					
+						Response_Message[i] = 0x00;
+				}
+										if(read_buf[2] == 0x02)		
+										{
+											flag++;
+											if(flag == 0x01)
+											{
+					  //Finger 0 event info (touch / event type / hover / palm / event id[0~3])
+						Response_Message[0] = 0xA2;
+																  //Finger 0 xy coordinate (high)  y coordinate (bit 11 ~ bit 8) x coordinate (bit 11 ~ bit 8)
+						Response_Message[1] = (read_buf[13] << 4) | (read_buf[11] & 0x0F);
+					
+					  //Finger 0 x coordinate (bit 7 ~ bit 0)
+						Response_Message[2] = read_buf[10] ;
+					
+					  //Finger 0 y coordinate (bit 7 ~ bit 0)
+						Response_Message[3] = read_buf[12] ;
+
+					  //Finger 0 z (strength)
+					  Response_Message[4] = read_buf[14] ;
+											}
+											else
+											{
+																	  //Finger 0 event info (touch / event type / hover / palm / event id[0~3])
+						Response_Message[0] =  0xA1;									
+									
+					  //Finger 0 xy coordinate (high)  y coordinate (bit 11 ~ bit 8) x coordinate (bit 11 ~ bit 8)
+						Response_Message[1] = (read_buf[7] << 4) | (read_buf[5] & 0x0F);
+					
+					  //Finger 0 x coordinate (bit 7 ~ bit 0)
+						Response_Message[2] = read_buf[4] ;
+					
+					  //Finger 0 y coordinate (bit 7 ~ bit 0)
+						Response_Message[3] = read_buf[6] ;
+
+					  //Finger 0 z (strength)
+					  Response_Message[4] = read_buf[8] ;
+												flag = 0;
+											}
+										}
+										else{
+						  //Finger 0 event info (touch / event type / hover / palm / event id[0~3])
+						Response_Message[0] = (read_buf[1]<<4 | 0x7F) & 0xA1;									
+									
+					  //Finger 0 xy coordinate (high)  y coordinate (bit 11 ~ bit 8) x coordinate (bit 11 ~ bit 8)
+						Response_Message[1] = (read_buf[7] << 4) | (read_buf[5] & 0x0F);
+					
+					  //Finger 0 x coordinate (bit 7 ~ bit 0)
+						Response_Message[2] = read_buf[4] ;
+					
+					  //Finger 0 y coordinate (bit 7 ~ bit 0)
+						Response_Message[3] = read_buf[6] ;
+
+					  //Finger 0 z (strength)
+					  Response_Message[4] = read_buf[8] ;
+            	}
+					  //Finger 1 event info (touch / event type / hover / palm / event id[0~3])		
+            if(read_buf[2] == 0x02)		
+						{							
+						  Response_Message[8] = 0xA2;
+						}
+						else
+						{
+						  Response_Message[8] = 0x22;						
+						}
+					  //Finger 1 xy coordinate (high)  y coordinate (bit 11 ~ bit 8) x coordinate (bit 11 ~ bit 8)
+						Response_Message[9] = (read_buf[13] << 4) | (read_buf[11] & 0x0F);					
+
+					  //Finger 1 x coordinate (bit 7 ~ bit 0)
+						Response_Message[10] = read_buf[10] ;
+					
+					  //Finger 1 y coordinate (bit 7 ~ bit 0)
+						Response_Message[11] = read_buf[12] ;
+
+					  //Finger 1 z (strength)
+					  Response_Message[12] = read_buf[14] ;
+						
+				
+
+			}
+			else if(Buffer_Rx_IIC1[0] == 0x0F)
+			{
+//					if(read_buf[2] == 0x02)		
+//					{
+//	          Response_Message[0] = 0x10;
+//					}
+//					else
+//					{
+			      Response_Message[0] = 0x08;
+
+//					}
+
+			}
+			else if(Buffer_Rx_IIC1[0] == 0xE1)
+			{
+						Response_Message[0] = 0x04;
+						Response_Message[1] = 0x82;
+						Response_Message[2] = 0x07;
+						Response_Message[3] = 0x00;
+			}
+			
+			else if(Buffer_Rx_IIC1[0] == 0xF6)
+			{
+						Response_Message[0] = 0x55;
+						Response_Message[1] = 0x56;
+						Response_Message[2] = 0x32;
+						Response_Message[3] = 0x00;
+						Response_Message[4] = 0x00;
+						Response_Message[5] = 0x00;
+						Response_Message[6] = 0x00;
+						Response_Message[7] = 0x00;
+						Response_Message[8] = 0x11;
+						Response_Message[9] = 0x08;
+
+			}
+			else if(Buffer_Rx_IIC1[0] == 0x02)
+			{
+						Response_Message[0] = 0x54;
+						Response_Message[1] = 0x00;
+						Response_Message[2] = 0x00;
+						Response_Message[3] = 0x00;
+			}
+			else if(Buffer_Rx_IIC1[0] == 0x0B)
+			{
+						Response_Message[0] = 0x13;
+						Response_Message[1] = 0x0C;
+						Response_Message[2] = 0x00;
+			}
+			
+			else if(Buffer_Rx_IIC1[0] == 0xE1)
+			{
+						Response_Message[0] = 0x04;
+						Response_Message[1] = 0x82;
+						Response_Message[2] = 0x07;
+						Response_Message[2] = 0x00;
+			}
+			else if(Buffer_Rx_IIC1[0] == 0xE2)
+			{
+						Response_Message[0] = 0x82;
+			}
+			else if(Buffer_Rx_IIC1[0] == 0xE3)
+			{
+						Response_Message[0] = 0x07;
+			}
+//		  else
+//			{
+//						Response_Message[0] = 0x01;
+//						Response_Message[1] = 0x02;
+//			}
+
+    
  
-            Instruct = 0;
+//            Instruct = 0;
         }
  
-        RxBuff[Offset++] = temp;
+//        RxBuff[Offset++] = temp;
     }
     else if(status & I2C_ISR_TXIS)
     {
         I2C1->ISR |= I2C_ISR_TXE;
-        if(Offset < MaxBytes)
-        {
-            I2C_SendData(I2C1, TxBuff[Offset++]);
-        }
-        else
-        {
-            I2C_SendData(I2C1, 0xFF);
-        }
+
+        I2C_SendData(I2C1, Response_Message[Tx_Idx_IIC1++]);
+
     }
     else if(status & I2C_ISR_STOPF)
     {
         I2C_ClearITPendingBit(I2C1, I2C_ISR_STOPF);
-//        DEBUG_I2C("I2C1 Host stop, Bytes: %d\n\r", Offset);
-        ; // ????
-        ;
+
     }
     else
     {
@@ -312,3 +455,53 @@ void I2C1_IRQHandler(void)
 
 //}
 /*******************************************************************/
+//void I2C1_IRQHandler(void)
+//{
+//   __IO uint32_t I2CFlagStatus = 0x00000000;
+//   uint8_t data;
+//   
+//   I2CFlagStatus = (uint32_t)(I2C1->ISR & (uint16_t)0x0000100FE);
+//   if ((I2CFlagStatus & I2C_ISR_ADDR) != 0)
+//  	{
+//	    if(I2C1->ISR&I2C_ISR_DIR) //tx mode
+//	    {
+//             Tx_count = 0;
+//         	I2C1->ISR |= I2C_ISR_TXE;
+//             I2C1->ICR |= I2C_ICR_ADDRCF; 
+//	   } 
+//		
+//	 if((I2C1->ISR&I2C_ISR_DIR)==0) //rx mode
+//        {           
+//	    Rx_buffer[0] = 0;
+//	    Rx_count= 1;
+//           I2C1->ICR |= I2C_ICR_ADDRCF; 
+//        }
+//    }
+//   else if ((I2CFlagStatus & I2C_ISR_RXNE) != 0)
+//   {
+//   	 data = I2C_ReceiveData(I2C1);
+//	 if(Rx_count < Rx_MAX){
+//            Rx_buffer[Rx_count++] = data ;
+//	     if(Rx_count == 2){
+//	 	   reg_offset = Rx_buffer[1];
+//	     }
+//	 }
+//   }
+//  else if ((I2CFlagStatus & I2C_ISR_TXIS) != 0)
+//  {
+//		I2C_SendData(I2C1,Tx_buffer[reg_offset+Tx_count]);
+//		Tx_count++;
+//		if(Tx_count >= Tx_MAX)
+//		{
+//			Tx_count = 0; //tx ok
+//		}
+//  }
+//  else if ((I2CFlagStatus & I2C_ISR_STOPF) != 0)
+//  {
+// 		I2C1->ICR |= I2C_ICR_STOPCF;
+//		Rx_buffer[0] = Rx_count;
+// 		Rx_count = 0;
+// 		Tx_count = 0;
+//  } 
+//  
+//}

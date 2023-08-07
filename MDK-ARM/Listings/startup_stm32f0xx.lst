@@ -385,18 +385,18 @@ ARM Macro Assembler    Page 6
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M0 --apcs=interw
 ork --depend=.\objects\startup_stm32f0xx.d -o.\objects\startup_stm32f0xx.o -I.\
-RTE\_Project -IC:\Users\nuc\AppData\Local\Arm\Packs\ARM\CMSIS\5.4.0\CMSIS\Core\
-Include -IC:\Users\nuc\AppData\Local\Arm\Packs\Keil\STM32F0xx_DFP\1.0.1\Device\
-Include --predefine="__UVISION_VERSION SETA 534" --predefine="_RTE_ SETA 1" --p
+RTE\_Project -IC:\Users\Tomas\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Cor
+e\Include -IC:\Users\Tomas\AppData\Local\Arm\Packs\Keil\STM32F0xx_DFP\1.0.1\Dev
+ice\Include --predefine="__UVISION_VERSION SETA 534" --predefine="_RTE_ SETA 1"
 
 
 
 ARM Macro Assembler    Page 7 
 
 
-redefine="STM32F030 SETA 1" --predefine="_RTE_ SETA 1" --list=.\listings\startu
-p_stm32f0xx.lst ..\Core\CMSIS\Device\ST\STM32F0xx\Source\Templates\arm\startup_
-stm32f0xx.s
+ --predefine="STM32F030 SETA 1" --predefine="_RTE_ SETA 1" --list=.\listings\st
+artup_stm32f0xx.lst ..\Core\CMSIS\Device\ST\STM32F0xx\Source\Templates\arm\star
+tup_stm32f0xx.s
 
 
 
