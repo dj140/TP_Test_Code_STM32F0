@@ -5,7 +5,7 @@
 //#include "misc.h"
 
 #include "i2c_slave.h"
-uint8_t flag = 1;
+uint8_t flag = 0;
 
 /*******************************************************************/
 extern volatile uint8_t ADCBuffer[16];
@@ -66,8 +66,8 @@ void I2C1_Slave_init(void) {
     GPIO_PinAFConfig(GPIOB, GPIO_PinSource7, GPIO_AF_1);
  
     // I2C config
-    I2C_InitStructure.I2C_Timing               = 0x00731012;
-    I2C_InitStructure.I2C_AnalogFilter         = I2C_AnalogFilter_Enable;
+    I2C_InitStructure.I2C_Timing               = 0x0010020A;
+    I2C_InitStructure.I2C_AnalogFilter         = I2C_AnalogFilter_Disable;
     I2C_InitStructure.I2C_DigitalFilter        = 0x00;
     I2C_InitStructure.I2C_Mode                 = I2C_Mode_I2C;
     I2C_InitStructure.I2C_OwnAddress1          = DEV_SLAVE_ADDR;
@@ -76,7 +76,7 @@ void I2C1_Slave_init(void) {
     I2C_Init(I2C1, &I2C_InitStructure);
     I2C_Cmd(I2C1, ENABLE);
  
-    I2C_StretchClockCmd(I2C1, DISABLE);
+    I2C_StretchClockCmd(I2C1, ENABLE);
  
     NVIC_InitStructure.NVIC_IRQChannel         = I2C1_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPriority = 0; // Low Medium Hight VeryHigh: 0 - 3
@@ -413,11 +413,11 @@ void I2C1_IRQHandler(void)
         I2C_ClearITPendingBit(I2C1, I2C_ISR_STOPF);
 
     }
-    else
-    {
-        I2C_ClearITPendingBit(I2C1, 0x00003F38);
-//        printf("I2C1 Unknown event occurs!\n\r");
-    }
+//    else
+//    {
+//        I2C_ClearITPendingBit(I2C1, 0x00003F38);
+////        printf("I2C1 Unknown event occurs!\n\r");
+//    }
 }
 
 /*******************************************************************/

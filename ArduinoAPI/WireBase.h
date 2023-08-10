@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
  * The MIT License
  *
  * Copyright (c) 2010 LeafLabs LLC.
@@ -44,7 +44,7 @@
 
 #include "Arduino.h"
 
-#define WIRE_BUFSIZ 32
+#define WIRE_BUFSIZ 40
 
 /* return codes from endTransmission() */
 #define SUCCESS   0        /* transmission was successful */

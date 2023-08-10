@@ -32,13 +32,13 @@ void LED_Toogle()
 			
 				ZT7568.requestFrom(ZT7568_SLAVE_ADDR, 40);    
 			
-//				while (ZT7568.available()) 
-//				{ 
+				while (ZT7568.available()) 
+				{ 
 						for(uint8_t i = 0; i < 40; i++)
 					{
-					  read_buf[i] = Wire.read(); 
+					  read_buf[i] = ZT7568.read(); 
 					}
-//				}	
+				}	
 				
 				ZT7568.beginTransmission(ZT7568_SLAVE_ADDR); 		
 				ZT7568.write(0x03);        		
@@ -180,27 +180,7 @@ void setup() {
 void loop() {
 
 //    // put your main code here, to run repeatedly:
-//				ZT7568.beginTransmission(ZT7568_SLAVE_ADDR); 		
-//				ZT7568.write(0x80);        		
-//				ZT7568.write(0x00);        		    		
-//				ZT7568.endTransmission(); 
-//				delay_us(50);
-//			
-//				ZT7568.requestFrom(ZT7568_SLAVE_ADDR, 40);    
-//			
-////				while (ZT7568.available()) 
-////				{ 
-////						for(uint8_t i = 0; i < 40; i++)
-////					{
-////					  read_buf[i] = Wire.read(); 
-////					}
-////				}	
-//				
-//				ZT7568.beginTransmission(ZT7568_SLAVE_ADDR); 		
-//				ZT7568.write(0x03);        		
-//				ZT7568.write(0x00);        		    		
-//				ZT7568.endTransmission(); 
-//        delay(16);
+
 }
 
 

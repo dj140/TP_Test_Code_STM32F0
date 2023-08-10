@@ -46,6 +46,8 @@ void InternalClocks_Init(void)
     RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
     RCC_HCLKConfig(RCC_SYSCLK_Div1);
     RCC_PCLKConfig(RCC_SYSCLK_Div1);
+	//		  RCC_I2CCLKConfig(RCC_I2C1CLK_HSI);
+		RCC_I2CCLKConfig(RCC_I2C1CLK_SYSCLK);
 }
 
 /**

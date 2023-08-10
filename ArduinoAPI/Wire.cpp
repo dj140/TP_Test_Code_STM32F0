@@ -72,12 +72,12 @@ void TwoWire::i2c_start()
 {
 #ifdef FULL_SPEED_I2C
     digitalWrite_LOW(this->sda_pin);
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < 5; i++)
 		{
 		  __NOP();
 		}
     digitalWrite_LOW(this->scl_pin);
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < 5; i++)
 		{
 		  __NOP();
 		}
@@ -91,17 +91,17 @@ void TwoWire::i2c_stop()
 {
 #ifdef FULL_SPEED_I2C
     digitalWrite_LOW(this->sda_pin);
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < 5; i++)
 		{
 		  __NOP();
 		}
     digitalWrite_HIGH(this->scl_pin);
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < 5; i++)
 		{
 		  __NOP();
 		}
     digitalWrite_HIGH(this->sda_pin);
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i <5; i++)
 		{
 		  __NOP();
 		}
@@ -116,17 +116,17 @@ bool TwoWire::i2c_get_ack()
 {
 #ifdef FULL_SPEED_I2C
     digitalWrite_LOW(this->scl_pin);
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < 5; i++)
 		{
 		  __NOP();
 		}
     digitalWrite_HIGH(this->sda_pin);
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < 5; i++)
 		{
 		  __NOP();
 		}
     digitalWrite_HIGH(this->scl_pin);
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < 5; i++)
 		{
 		  __NOP();
 		}
@@ -139,7 +139,7 @@ bool TwoWire::i2c_get_ack()
     bool ret = !digitalRead(this->sda_pin);
 #ifdef FULL_SPEED_I2C
     digitalWrite_LOW(this->scl_pin);
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < 5; i++)
 		{
 		  __NOP();
 		}
@@ -153,17 +153,17 @@ void TwoWire::i2c_send_ack()
 {
 #ifdef FULL_SPEED_I2C
     digitalWrite_LOW(this->sda_pin);
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < 5; i++)
 		{
 		  __NOP();
 		}
     digitalWrite_HIGH(this->scl_pin);
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < 5; i++)
 		{
 		  __NOP();
 		}
     digitalWrite_LOW(this->scl_pin);
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i <5; i++)
 		{
 		  __NOP();
 		}
@@ -178,12 +178,12 @@ void TwoWire::i2c_send_nack()
 {
 #ifdef FULL_SPEED_I2C
     digitalWrite_HIGH(this->sda_pin);
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < 5; i++)
 		{
 		  __NOP();
 		}
     digitalWrite_HIGH(this->scl_pin);
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < 5; i++)
 		{
 		  __NOP();
 		}
@@ -204,7 +204,7 @@ uint8_t TwoWire::i2c_shift_in()
     uint8_t data = 0;
 #ifdef FULL_SPEED_I2C
     digitalWrite_HIGH(this->sda_pin);
-			for(int i = 0; i < 4; i++)
+			for(int i = 0; i < 5; i++)
 		{
 		  __NOP();
 		}
@@ -216,17 +216,17 @@ uint8_t TwoWire::i2c_shift_in()
     {
 #ifdef FULL_SPEED_I2C
         digitalWrite_HIGH(this->scl_pin);
-		for(int i = 0; i < 4; i++)
+		for(uint8_t a = 0; a < 5; a++)
 		{
 		  __NOP();
 		}
         data |= digitalRead(this->sda_pin) << (7 - i);
-		for(int i = 0; i < 4; i++)
+		for(uint8_t a = 0; a < 5; a++)
 		{
 		  __NOP();
 		}
         digitalWrite_LOW(this->scl_pin);
-		for(int i = 0; i < 4; i++)
+		for(uint8_t a = 0; a < 5; a++)
 		{
 		  __NOP();
 		}
@@ -248,12 +248,12 @@ void TwoWire::i2c_shift_out(uint8_t val)
         set_sda(!!(val & (1 << (7 - i)) ) );
 #ifdef FULL_SPEED_I2C
         digitalWrite_HIGH(this->scl_pin);
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < 5; i++)
 		{
 		  __NOP();
 		}
         digitalWrite_LOW(this->scl_pin);
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < 5; i++)
 		{
 		  __NOP();
 		}
